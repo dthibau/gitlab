@@ -2,3 +2,5 @@
 *.class
 *#
 **/emails-recus/
+**/gitlab-runner/
+**/gitlab/

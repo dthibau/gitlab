@@ -1,0 +1,2 @@
+# Arrête ssh Ubuntu 
+sudo systemctl stop ssh.socket ssh.service
