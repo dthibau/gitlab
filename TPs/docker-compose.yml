@@ -21,18 +21,27 @@ services:
       retries: 10
       start_period: 3m
 
+  gitlab-runner-init:
+    image: alpine
+    command: chown -R 999:999 /home/gitlab-runner
+    volumes:
+      - ./gitlab-runner/home:/home/gitlab-runner:Z
+
   gitlab-runner:
     image: gitlab/gitlab-runner:latest
     container_name: gitlab-runner
+    privileged: true
     volumes:
       - ./gitlab-runner/home:/home/gitlab-runner:Z
-      - ./gitlab-runner/config:/etc/gitlab-runner:Z
+      - ./gitlab-runner/config:/etc/gitlab-runner
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - gitlab-network
     depends_on:
       gitlab.formation.org:
         condition: service_healthy
+      gitlab-runner-init:
+        condition: service_completed_successfully
 
   gitlab-sonar:
     image: sonarqube
@@ -59,3 +68,4 @@ networks:
 volumes:
   sonarqube_conf:
   sonarqube_data:
+  gitlab-runner-home: 
